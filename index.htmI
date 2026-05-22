@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BY PASS 404 - تجاوز حماية GitHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0f1e 0%, #0d1117 100%);
+            color: #e6edf3;
+            font-family: 'Courier New', 'Fira Code', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(13, 17, 23, 0.95);
+            border-radius: 24px;
+            border: 1px solid #3b82f6;
+            box-shadow: 0 0 30px rgba(59,130,246,0.2);
+            padding: 2rem;
+            backdrop-filter: blur(4px);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #3b82f6, #a855f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .sub {
+            text-align: center;
+            color: #8b949e;
+            margin-bottom: 2rem;
+            font-size: 0.85rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem;
+            background: #1f2937;
+            border: 2px solid #2d3a4a;
+            border-radius: 16px;
+            color: #00ff88;
+            font-size: 1rem;
+            font-family: monospace;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 10px rgba(59,130,246,0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: monospace;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(59,130,246,0.8);
+        }
+
+        .result {
+            margin-top: 2rem;
+            background: #0a0c10;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border-left: 5px solid #3b82f6;
+            word-break: break-word;
+        }
+
+        .success {
+            border-left-color: #00ff88;
+            background: rgba(0,255,136,0.05);
+        }
+
+        .error {
+            border-left-color: #ff4444;
+            background: rgba(255,68,68,0.05);
+        }
+
+        .raw-code {
+            margin-top: 1rem;
+        }
+
+        textarea {
+            width: 100%;
+            background: #000000;
+            color: #00ff88;
+            padding: 1rem;
+            font-family: monospace;
+            border-radius: 12px;
+            border: 1px solid #3b82f6;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            resize: vertical;
+        }
+
+        .link-result {
+            color: #3b82f6;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .link-result:hover {
+            text-decoration: underline;
+        }
+
+        hr {
+            border-color: #2d3a4a;
+            margin: 1rem 0;
+        }
+
+        .footer {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 2rem;
+            color: #5a6573;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🔓 BYPASS 404 GUARD</h1>
+    <div class="sub">اختراق حماية GitHub Pages - تجاوز 404 التلقائي</div>
+
+    <div class="input-group">
+        <label>📌 رابط GitHub الذي يعطي 404:</label>
+        <input type="text" id="targetUrl" placeholder="مثال: https://username.github.io/fake-repo/" value="https://example.github.io/test123/">
+    </div>
+
+    <button id="bypassBtn">⚡ تجاوز الحماية الآن ⚡</button>
+
+    <div id="result" class="result">
+        ⏳ في انتظار إدخال الرابط...
+    </div>
+    <div class="footer">
+        ⚠️ النظام يحتاج إلى خادم خلفي (Backend) للتشغيل الكامل | هذا الكود للواجهة الأمامية فقط
+    </div>
+</div>
+
+<script>
+    const bypassBtn = document.getElementById('bypassBtn');
+    const targetUrlInput = document.getElementById('targetUrl');
+    const resultDiv = document.getElementById('result');
+
+    bypassBtn.addEventListener('click', async () => {
+        let targetUrl = targetUrlInput.value.trim();
+        if (!targetUrl) {
+            resultDiv.innerHTML = '<div class="error">❌ الرجاء إدخال رابط GitHub أولاً</div>';
+            resultDiv.className = 'result error';
+            return;
+        }
+
+        resultDiv.innerHTML = '🕵️‍♂️ جاري فحص الرابط ومحاولة تجاوز حماية 404...';
+        resultDiv.className = 'result';
+
+        try {
+            // محاولة الاتصال بالخادم الخلفي (لو موجود)
+            const backendUrl = localStorage.getItem('backend_url') || 'http://localhost:3000';
+            
+            const response = await fetch(`${backendUrl}/api/bypass404`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ targetUrl: targetUrl })
+            });
+
+            if (!response.ok) {
+                throw new Error(`فشل الاتصال بالخادم (${response.status})`);
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                resultDiv.innerHTML = `
+                    <div class="success">✅ تم تجاوز حماية 404 بنجاح!</div>
+                    <hr>
+                    <div>🔗 <strong>الرابط بعد التجاوز:</strong><br>
+                    <a href="${data.newUrl}" target="_blank" class="link-result">${data.newUrl}</a></div>
+                    <hr>
+                    <div class="raw-code">
+                        <strong>📄 الكود الخام (الحماية القوية):</strong>
+                        <textarea rows="10" readonly id="rawCodeArea">${escapeHtml(data.rawCode)}</textarea>
+                        <button id="copyRawBtn" style="margin-top: 8px; background:#2d3748; padding:6px; font-size:12px;">📋 نسخ الكود</button>
+                    </div>
+                `;
+                resultDiv.className = 'result success';
+                
+                // إضافة حدث النسخ
+                setTimeout(() => {
+                    const copyBtn = document.getElementById('copyRawBtn');
+                    if (copyBtn) {
+                        copyBtn.addEventListener('click', () => {
+                            const codeArea = document.getElementById('rawCodeArea');
+                            codeArea.select();
+                            document.execCommand('copy');
+                            alert('تم نسخ الكود الخام');
+                        });
+                    }
+                }, 100);
+            } else {
+                resultDiv.innerHTML = `<div class="error">❌ فشل التجاوز: ${escapeHtml(data.message)}</div>`;
+                resultDiv.className = 'result error';
+            }
+        } catch (err) {
+            console.error(err);
+            resultDiv.innerHTML = `
+                <div class="error">
+                    ⚠️ لا يمكن الاتصال بالخادم الخلفي!<br><br>
+                    <strong>🔧 لتشغيل الأداة كاملة، تحتاج إلى:</strong><br>
+                    1. تشغيل خادم Node.js (server.js)<br>
+                    2. وضع GitHub Token صالح<br>
+                    3. تغيير رابط الخادم في الإعدادات<br><br>
+                    <small>الخطأ الأصلي: ${err.message}</small>
+                </div>
+            `;
+            resultDiv.className = 'result error';
+        }
+    });
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+</script>
+</body>
+</html>
