@@ -1178,7 +1178,7 @@ local WindowBackground = Create("ImageLabel", MainFrame, {
     Size = UDim2.new(1, 0, 1, 0),
     Position = UDim2.new(0, 0, 0, 0),
     BackgroundTransparency = 1,
-    Image = "rbxassetid://122669042855318",
+    Image = "‏rbxthumb://type=Asset&w=420&h=420&id=128480065290179",
     ImageTransparency = 0.0,
     ScaleType = Enum.ScaleType.Crop,
     ZIndex = 0
