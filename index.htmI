@@ -1,1 +1,479 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRX | HUB - النظام التراكسي</title>
+    <style>
+        :root {
+            --bg-dark: #0c0000; 
+            --royal-black: #150000;
+            --card-bg: rgba(22, 0, 0, 0.95);
+            --border-royal: #3d0000; 
+            --royal-glow: rgba(255, 0, 0, 0.2);
+            --text-color: #ffcccc;
+            --main-red: #ff1a1a;
+            --deep-red: #210000;
+        }
 
+        
+        * { 
+            box-sizing: border-box; 
+            -webkit-user-select: none !important; 
+            -moz-user-select: none !important; 
+            -ms-user-select: none !important; 
+            user-select: none !important; 
+            
+         
+            -webkit-touch-callout: none !important; 
+            
+            -webkit-user-drag: none !important;
+            user-drag: none !important;
+            
+            -webkit-tap-highlight-color: transparent !important;
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-color); margin: 0; padding: 0; min-height: 100vh; overflow-x: hidden;
+            position: relative;
+        }
+
+        .blood-drop {
+            position: fixed;
+            top: -25px;
+            width: 3px;
+            height: 30px;
+            background: linear-gradient(to bottom, #ff0000, #550000);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 300000;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(105vh); opacity: 0; }
+        }
+
+        .bubble {
+            position: fixed;
+            bottom: -20px;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 26, 26, 0.4), rgba(100, 0, 0, 0.8));
+            border: 1px solid rgba(255, 0, 0, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.5); opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.4; }
+            100% { transform: translateY(-105vh) scale(1.2); opacity: 0; }
+        }
+
+        .main-content-wrapper { position: relative; z-index: 10; }
+
+        #video-loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000000; z-index: 100000; display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #intro-video { width: 100%; height: 100%; object-fit: cover; }
+
+        .menu-box-trigger::after, .hack-card::after, .dl-link::after, .back-btn::after, .menu-item::after, .top-left-avatar-container::after, .logo-img-container::after, .discord-footer-btn::after, .title-bar-rect::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border: 2px solid transparent;
+            border-radius: inherit;
+            background: linear-gradient(135deg, transparent 40%, var(--main-red) 50%, transparent 60%) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out;
+            mask-composite: exclude;
+            background-size: 200% 200%;
+            animation: borderGlow 1.8s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes borderGlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 200%; }
+        }
+
+        .top-left-avatar-container {
+            position: absolute; top: 20px; left: 20px; width: 60px; height: 60px;
+            border-radius: 50%; border: 2px solid var(--border-royal);
+            box-shadow: 0 0 15px var(--royal-glow); cursor: pointer;
+            z-index: 100; overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .top-left-avatar-container:hover { transform: scale(1.1); }
+        .top-left-avatar { width: 100%; height: 100%; object-fit: cover; }
+
+        header { padding: 40px 0 20px; text-align: center; }
+        
+        .logo-img-container {
+            width: 130px; height: 130px; border-radius: 25px; 
+            border: 2px solid var(--border-royal); box-shadow: 0 0 30px var(--royal-glow); 
+            margin: 0 auto 25px; background: var(--deep-red); position: relative; overflow: hidden;
+        }
+        .logo-img { width: 100%; height: 100%; object-fit: cover; }
+
+        .title-bar-rect {
+            position: relative; background: var(--card-bg); border: 2px solid var(--border-royal);
+            width: 100%; max-width: 95%; margin: 0 auto; padding: 10px 0; border-radius: 6px;
+            overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+        .title-bar-rect h1 { font-size: 24px; margin: 0; font-weight: 900; color: #ffffff; text-shadow: 0 0 15px var(--main-red); letter-spacing: 1px; }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 20px 20px 60px; }
+        .main-menu-grid { display: flex; flex-direction: column; gap: 25px; }
+        
+        .menu-box-trigger, .hack-card, .dl-link, .back-btn, .menu-item {
+            position: relative; overflow: hidden; background: var(--card-bg);
+            border: 2px solid var(--border-royal); box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+        }
+
+        .menu-box-trigger { border-radius: 25px; padding: 35px 25px; text-align: center; cursor: pointer; transition: 0.4s ease; }
+        .menu-box-trigger:hover { border-color: var(--main-red); box-shadow: 0 0 30px rgba(255, 0, 0, 0.3); transform: translateY(-3px); }
+        .menu-box-trigger h2 { margin: 0 0 10px 0; font-size: 26px; font-weight: 900; color: #ffffff; text-shadow: 0 0 10px var(--main-red); }
+        .menu-box-trigger p { margin: 0; font-size: 15px; color: var(--text-color); opacity: 0.8; }
+
+        .sub-page { display: none; background: var(--card-bg); border: 2px solid var(--border-royal); border-radius: 30px; padding: 35px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); animation: fadeEffect 0.5s ease forwards; }
+        @keyframes fadeEffect { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        
+        .section-title-red { font-size: 26px; font-weight: 900; color: var(--main-red); margin-bottom: 25px; text-align: center; text-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
+
+        .hack-card { background: rgba(30, 0, 0, 0.6); border-radius: 20px; padding: 25px; text-align: center; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
+        .hack-card:hover { border-color: var(--main-red); box-shadow: 0 0 15px rgba(255,0,0,0.2); }
+        .hack-card img { width: 85px; height: 85px; border-radius: 50%; margin: 0 auto 15px; border: 2px solid var(--border-royal); }
+        .hack-card h3 { margin: 10px 0; font-size: 21px; font-weight: 900; color: #ffffff; }
+        
+        .btn-group { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+
+        .dl-link { display: block; text-decoration: none; background: var(--deep-red); color: #ffffff; padding: 14px; border-radius: 50px; font-weight: 900; font-size: 14px; transition: 0.4s; }
+        .dl-link:hover { background: var(--main-red); color: #120000; font-weight: 950; box-shadow: 0 0 20px var(--main-red); }
+
+        .back-btn { display: inline-block; margin-bottom: 25px; background: var(--deep-red); color: var(--main-red); padding: 10px 25px; border-radius: 50px; cursor: pointer; font-weight: 900; transition: 0.3s; }
+        .back-btn:hover { background: var(--main-red); color: #000; box-shadow: 0 0 15px var(--main-red); }
+
+        .footer-discord-wrapper { text-align: center; margin: 40px 0 20px; position: relative; z-index: 20; }
+        .discord-footer-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 15px; background: var(--deep-red); border: 2px solid var(--border-royal); color: #ffffff; padding: 16px 45px; border-radius: 50px; font-size: 17px; font-weight: 900; text-decoration: none; transition: 0.3s; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
+        .discord-footer-btn:hover { background: var(--main-red); color: #120000; box-shadow: 0 0 30px var(--main-red); transform: translateY(-2px); }
+        .discord-icon-img { width: 26px; height: 26px; object-fit: contain; }
+
+        .full-screen-menu { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(12, 0, 0, 0.99); z-index: 200000; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1); transform: translateX(-100%); }
+        .full-screen-menu.open { opacity: 1; visibility: visible; transform: translateX(0); }
+        .menu-title { font-size: 32px; font-weight: 900; color: var(--main-red); margin-bottom: 40px; text-shadow: 0 0 15px var(--main-red); }
+        .menu-items-container { display: flex; flex-direction: column; gap: 20px; width: 85%; max-width: 400px; }
+        .menu-item { background: var(--deep-red); color: #ffffff; padding: 18px; border-radius: 50px; text-align: center; font-size: 18px; font-weight: 900; cursor: pointer; text-decoration: none; transition: 0.3s; }
+        .menu-item:hover { background: var(--main-red); color: #000; box-shadow: 0 0 25px var(--main-red); }
+        .close-menu-btn { position: absolute; top: 30px; left: 30px; background: none; border: none; color: #ffffff; font-size: 40px; cursor: pointer; transition: 0.3s; }
+        .close-menu-btn:hover { color: var(--main-red); }
+    </style>
+</head>
+<body>
+
+<div id="video-loader">
+    <video id="intro-video" autoplay muted playsinline preload="auto">
+        <source src="https://github.com/Rxz60/VO/raw/refs/heads/main/ScreenRecording_%D9%A0%D9%A6-%D9%A1%D9%A8-%D9%A2%D9%A0%D9%A2%D9%A6%20%D9%A1%D9%A8-%D9%A4%D9%A2-%D9%A4%D9%A3_1.mov" type="video/mp4">
+    </video>
+</div>
+
+<div class="main-content-wrapper">
+
+    <div class="top-left-avatar-container" onclick="toggleMenu()">
+        <img src="https://raw.githubusercontent.com/Rxz60/Rxz/refs/heads/main/3A35D315-484B-46E4-893F-E9F5D779A625.png" class="top-left-avatar">
+    </div>
+
+    <header>
+        <div class="logo-img-container">
+            <img src="https://github.com/Rxz60/Delta/raw/refs/heads/main/A1351BE6-9544-4996-94B8-433B565410A6.png" class="logo-img">
+        </div>
+        <div class="title-bar-rect">
+            <h1>TRX | HUB - النظام التراكسي</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div id="main-menu-page" class="main-menu-grid">
+            <div class="menu-box-trigger" onclick="navigateToSubPage('page-ios')">
+                <h2>قائمة الآيفون (iOS)</h2>
+                <p>تحتوي على نسخ Delta TRX والمزيد من التحديثات...</p>
+            </div>
+            <div class="menu-box-trigger" onclick="navigateToSubPage('page-android')">
+                <h2>قائمة الأندرويد (Android)</h2>
+                <p>تحتوي على Delta, Arceus X, PunkX, Codex والمزيد...</p>
+            </div>
+            <div class="menu-box-trigger" onclick="navigateToSubPage('page-pc')">
+                <h2>قائمة الكمبيوتر (PC)</h2>
+                <p>تحتوي على أدوات وبرامج المحاكاة المخصصة للويندوز...</p>
+            </div>
+        </div>
+
+        <div id="page-ios" class="sub-page">
+            <button class="back-btn" onclick="returnToMainMenu()">← رجوع للرئيسية</button>
+            <div class="section-title-red">نسخ الآيفون المتوفرة</div>
+            <div class="cards-grid">
+                <div class="hack-card">
+                    <img src="https://raw.githubusercontent.com/hatm12345cc-source/VN7/refs/heads/main/IMG_1929.png">
+                    <h3>Delta iOS</h3>
+                    <div class="btn-group">
+                        <a href="https://nekoo.eu.org/VJC2Wh" class="dl-link">Delta TRX</a>
+                        <a href="https://nekoo.eu.org/mnzdiQ" class="dl-link">Delta VN TRX</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-android" class="sub-page">
+            <button class="back-btn" onclick="returnToMainMenu()">← رجوع للرئيسية</button>
+            <div class="section-title-red">نسخ الأندرويد المتوفرة</div>
+            <div class="cards-grid">
+                <div class="hack-card">
+                    <img src="https://raw.githubusercontent.com/hatm12345cc-source/VN7/refs/heads/main/IMG_1929.png">
+                    <h3>Delta Android</h3>
+                    <div class="btn-group">
+                        <a href="https://www.mediafire.com/file/a2z09nicz0j4efq/Delta-2.724.735.apk/file" class="dl-link">Delta العادي</a>
+                        <a href="https://www.mediafire.com/file/5pvz0fjuaudojmd/Delta+VN+New.apk/file" class="dl-link">Delta VN (فيتنام)</a>
+                    </div>
+                </div>
+                <div class="hack-card">
+                    <img src="https://raw.githubusercontent.com/Rxz60/Rxz/refs/heads/main/IMG_2577.jpeg">
+                    <h3>Arceus X</h3>
+                    <div class="btn-group">
+                        <a href="https://android.spdmteam.com/" class="dl-link">Arceus Neo</a>
+                        <a href="https://vng.spdmteam.com/" class="dl-link">Arceus VN</a>
+                    </div>
+                </div>
+                <div class="hack-card">
+                    <img src="https://raw.githubusercontent.com/Rxz60/Rxz/refs/heads/main/IMG_2609.jpeg">
+                    <h3>PunkX Android</h3>
+                    <div class="btn-group">
+                        <a href="https://www.mediafire.com/file/4cz0juuzjfyqqm4/PunkX_64Bits.apk/file" class="dl-link">Original</a>
+                        <a href="https://www.mediafire.com/file/tafzvqylpjzp4go/PunkX_VNG_64Bits.apk/file" class="dl-link">VNG Version</a>
+                    </div>
+                </div>
+                <div class="hack-card">
+                    <img src="https://raw.githubusercontent.com/Rxz60/Rxz/refs/heads/main/IMG_2580.jpeg">
+                    <h3>Codex</h3>
+                    <div class="btn-group">
+                        <a href="https://www.mediafire.com/file/sqzqlm4b8re0rr5/Codex+v2.714.apk/file" class="dl-link">Global APK</a>
+                        <a href="https://www.mediafire.com/file/5p08n8qhtsv4x3s/Codex+VNG+V2.715+No+Key.apk/file" class="dl-link">Codex VN (No Key)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-pc" class="sub-page">
+            <button class="back-btn" onclick="returnToMainMenu()">← رجوع للرئيسية</button>
+            <div class="section-title-red">أدوات الكمبيوتر (PC)</div>
+            <div class="cards-grid">
+                <div class="hack-card">
+                    <img src="https://raw.githubusercontent.com/Rxz60/Rxz/heads/main/IMG_2612.jpeg">
+                    <h3>Velocity PC</h3>
+                    <div class="btn-group"><a href="https://gofile.io/d/biQGwp" class="dl-link">Download Windows</a></div>
+                </div>
+                <div class="hack-card">
+                    <img src="https://raw.githubusercontent.com/Rxz60/Rxz/heads/main/IMG_2611.jpeg">
+                    <h3>VegaX PC</h3>
+                    <div class="btn-group"><a href="https://github.com/1f0yt/community/releases/download/Vegax/Vega.X.apk" class="dl-link">تنزيل للويندوز</a></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-discord-wrapper">
+            <a href="https://discord.gg/rfx" target="_blank" class="discord-footer-btn">
+                <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" class="discord-icon-img">
+                <span>الانضمام إلى ديسكورد TRX | HUB الرسمي</span>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<div id="side-menu" class="full-screen-menu">
+    <button class="close-menu-btn" onclick="toggleMenu()">&times;</button>
+    <div class="menu-title">اختر القائمات</div>
+    <div class="menu-items-container">
+        <div class="menu-item" onclick="selectFromSideMenu('page-ios')">قائمة الايفون (iOS)</div>
+        <div class="menu-item" onclick="selectFromSideMenu('page-android')">قائمة الاندرويد (Android)</div>
+        <div class="menu-item" onclick="selectFromSideMenu('page-pc')">قائمة البي سي (PC)</div>
+        <a href="https://discord.gg/rfx" target="_blank" class="menu-item">ديسكورد TRX | HUB</a>
+    </div>
+</div>
+
+<script>
+  
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.addEventListener('dragstart', event => event.preventDefault());
+    document.addEventListener('drop', event => event.preventDefault());
+
+  
+    document.addEventListener('touchstart', function(e) {
+        if (e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+
+
+    document.querySelectorAll('a, img, .dl-link, .hack-card, .menu-box-trigger').forEach(el => {
+        el.addEventListener('contextmenu', e => e.preventDefault());
+    });
+
+  
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioContext;
+    let audioBuffer = null;
+    let isAudioLocked = true;
+
+    const audioUrl = 'https://github.com/Rxz60/TRX-HUB/raw/refs/heads/main/ScreenRecording_%D9%A0%D9%A7-%D9%A1%D9%A8-%D9%A2%D9%A0%D9%A2%D9%A6-%D9%A0%D9%A3-%D9%A0%D9%A7-%D9%A2%D9%A2_1.mp3';
+
+    function loadTrxSoundData() {
+        if (!audioContext) audioContext = new AudioCtx();
+        if (audioBuffer) return; 
+
+        fetch(audioUrl)
+            .then(response => response.arrayBuffer())
+            .then(data => audioContext.decodeAudioData(data))
+            .then(buffer => { audioBuffer = buffer; })
+            .catch(e => {});
+    }
+
+    function unlockAudioSystem() {
+        if (!audioContext) audioContext = new AudioCtx();
+        if (audioContext.state === 'suspended') audioContext.resume();
+        loadTrxSoundData();
+        isAudioLocked = false;
+        window.removeEventListener('click', unlockAudioSystem);
+        window.removeEventListener('touchstart', unlockAudioSystem);
+    }
+
+    function playTrxSoundInstant() {
+        if (audioContext && audioContext.state === 'suspended') audioContext.resume();
+        if (audioBuffer) {
+            const source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(audioContext.destination);
+            source.start(0); 
+        } else {
+            const fallbackAudio = new Audio(audioUrl);
+            fallbackAudio.play().catch(e => {});
+        }
+    }
+
+    function createHeavyBloodDrip() {
+        const dropCount = Math.floor(Math.random() * 10) + 25; 
+        for (let i = 0; i < dropCount; i++) {
+            const drop = document.createElement('div');
+            drop.classList.add('blood-drop');
+            const startLeft = Math.random() * window.innerWidth;
+            drop.style.left = startLeft + 'px';
+            const duration = (Math.random() * 0.6) + 0.6;
+            drop.style.animationDuration = duration + 's';
+            drop.style.height = (Math.random() * 25 + 20) + 'px';
+            drop.style.width = (Math.random() * 2 + 1.5) + 'px';
+            drop.style.animationDelay = (Math.random() * 0.3) + 's';
+            document.body.appendChild(drop);
+            setTimeout(() => { drop.remove(); }, (duration + 0.3) * 1000);
+        }
+    }
+
+    let activeInteraction = false;
+
+    function handleTrxTouchStart(e) {
+        activeInteraction = true; 
+        if (isAudioLocked) unlockAudioSystem();
+        playTrxSoundInstant();
+        createHeavyBloodDrip();
+    }
+
+    function handleTrxMouseDown(e) {
+        if (activeInteraction) { 
+            activeInteraction = false; 
+            return; 
+        }
+        if (isAudioLocked) unlockAudioSystem();
+        playTrxSoundInstant();
+        createHeavyBloodDrip();
+    }
+
+    document.addEventListener('touchstart', handleTrxTouchStart, { passive: true });
+    document.addEventListener('mousedown', handleTrxMouseDown);
+
+    window.addEventListener('click', unlockAudioSystem);
+    window.addEventListener('touchstart', unlockAudioSystem);
+
+    function generateSeaBubbles() {
+        const bubbleCount = 45; 
+        for (let i = 0; i < bubbleCount; i++) {
+            setTimeout(() => {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                const size = Math.random() * 18 + 6;
+                bubble.style.width = size + 'px';
+                bubble.style.height = size + 'px';
+                bubble.style.left = Math.random() * window.innerWidth + 'px';
+                const duration = Math.random() * 6 + 4;
+                bubble.style.animationDuration = duration + 's';
+                bubble.style.animationDelay = Math.random() * 8 + 's';
+                document.body.appendChild(bubble);
+                bubble.addEventListener('animationend', () => {
+                    bubble.style.left = Math.random() * window.innerWidth + 'px';
+                    bubble.style.animationDelay = '0s';
+                    const newSize = Math.random() * 18 + 6;
+                    bubble.style.width = newSize + 'px';
+                    bubble.style.height = newSize + 'px';
+                });
+            }, i * 200);
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        generateSeaBubbles();
+        loadTrxSoundData();
+        
+        const video = document.getElementById('intro-video');
+        const loader = document.getElementById('video-loader');
+
+        const activateSound = () => {
+            video.muted = false;
+            unlockAudioSystem();
+        };
+
+        window.addEventListener('click', activateSound, { once: true });
+        window.addEventListener('touchstart', activateSound, { once: true });
+
+        video.play().catch(() => {
+            document.addEventListener('click', () => { video.play(); }, { once: true });
+        });
+
+        video.onended = function() {
+            loader.style.opacity = '0';
+            loader.style.visibility = 'hidden';
+            setTimeout(() => { loader.style.display = 'none'; }, 500);
+        };
+    });
+
+    function navigateToSubPage(pageId) {
+        document.getElementById('main-menu-page').style.display = 'none';
+        const subPages = document.getElementsByClassName('sub-page');
+        for(let i=0; i<subPages.length; i++) { subPages[i].style.display = 'none'; }
+        document.getElementById(pageId).style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function returnToMainMenu() {
+        const subPages = document.getElementsByClassName('sub-page');
+        for(let i=0; i<subPages.length; i++) { subPages[i].style.display = 'none'; }
+        document.getElementById('main-menu-page').style.display = 'flex';
+    }
+
+    function toggleMenu() { document.getElementById('side-menu').classList.toggle('open'); }
+    function selectFromSideMenu(pageId) { toggleMenu(); navigateToSubPage(pageId); }
+</script>
+</body>
+</html>
